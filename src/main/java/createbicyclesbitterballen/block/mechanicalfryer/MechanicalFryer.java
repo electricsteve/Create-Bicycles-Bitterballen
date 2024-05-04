@@ -28,7 +28,6 @@ import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
-import createbicyclesbitterballen.block.mechanicalfryer.MechanicalFryerEntity;
 public class MechanicalFryer extends HorizontalKineticBlock implements IBE<MechanicalFryerEntity> {
     public MechanicalFryer(Properties properties) {
         super(properties);
@@ -56,9 +55,13 @@ public class MechanicalFryer extends HorizontalKineticBlock implements IBE<Mecha
         if (!itemInHand.isEmpty()) {
             // Check if the item can be processed using the fryer's method
             if (fryer.canProcess(itemInHand)) {
-                // Attempt to insert the item into the input inventory
-                if (fryer.inputInv.insertItem(0, itemInHand.copy(), true).isEmpty()) {
-                    fryer.inputInv.insertItem(0, itemInHand.split(1), false);
+                // Attempt to insert the whole item stack into the input inventory
+                ItemStack leftover = fryer.inputInv.insertItem(0, itemInHand, true);
+
+                if (leftover.isEmpty()) {
+                    // If the simulated insert results in no leftovers, perform the actual insert
+                    fryer.inputInv.insertItem(0, itemInHand.copy(), false);
+                    player.setItemInHand(handIn, ItemStack.EMPTY); // Empty the player's hand
                     fryer.setChanged(); // Mark the entity as changed
                     fryer.sendData(); // Send updated data to the client
                     return InteractionResult.CONSUME;

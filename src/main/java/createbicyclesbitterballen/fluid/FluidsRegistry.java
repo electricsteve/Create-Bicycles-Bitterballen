@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.builders.FluidBuilder;
 import com.tterrag.registrate.util.entry.FluidEntry;
 
+import createbicyclesbitterballen.effect.ModEffects;
 import createbicyclesbitterballen.index.BlockRegistry;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
@@ -50,12 +51,15 @@ public class FluidsRegistry {
     private static final float FRYING_OIL_FOG_DISTANCE = 0.2f;
     private static final float KETCHUP_FOG_DISTANCE = 0.1f;
     private static final float MAYONNAISE_FOG_DISTANCE = 0.1f;
+    private static final float CURDLED_MILK_FOG_DISTANCE = 0.2f;
     public static final ResourceLocation FRYINGOIL_STILL_RL = new ResourceLocation("create_bic_bit", "block/fryingoil_still");
     public static final ResourceLocation FRYINGOIL_FLOW_RL = new ResourceLocation("create_bic_bit", "block/fryingoil_flow");
     public static final ResourceLocation KETCHUP_STILL_RL = new ResourceLocation("create_bic_bit", "block/ketchup_still");
     public static final ResourceLocation KETCHUP_FLOW_RL = new ResourceLocation("create_bic_bit", "block/ketchup_flow");
     public static final ResourceLocation MAYONNAISE_STILL_RL = new ResourceLocation("create_bic_bit", "block/mayo_still");
     public static final ResourceLocation MAYONNAISE_FLOW_RL = new ResourceLocation("create_bic_bit", "block/mayo_flow");
+    public static final ResourceLocation CURDLED_MILK_STILL_RL = new ResourceLocation("create_bic_bit", "block/curdled_milk_still");
+    public static final ResourceLocation CURDLED_MILK_FLOW_RL = new ResourceLocation("create_bic_bit", "block/curdled_milk_flow");
     private static class CustomSolidRenderedFluidType extends TintedFluidType {
         private Vector3f fogColor;
         private Supplier<Float> fogDistance;
@@ -104,6 +108,12 @@ public class FluidsRegistry {
         fluidType.fogDistance = () -> MAYONNAISE_FOG_DISTANCE;
         return fluidType;
     };
+    private static final FluidBuilder.FluidTypeFactory CURDLED_MILK_TYPE_FACTORY = (properties, still, flowing) -> {
+        CustomSolidRenderedFluidType fluidType = new CustomSolidRenderedFluidType(properties, CURDLED_MILK_STILL_RL, CURDLED_MILK_FLOW_RL);
+        fluidType.fogColor = new Vector3f(201 / 255f, 199 / 255f, 156 / 255f);
+        fluidType.fogDistance = () -> CURDLED_MILK_FOG_DISTANCE;
+        return fluidType;
+    };
 
     public static final FluidEntry<ForgeFlowingFluid.Flowing> FRYING_OIL =
             REGISTRATE.standardFluid("frying_oil", FRYING_OIL_TYPE_FACTORY)
@@ -133,6 +143,16 @@ public class FluidsRegistry {
                             .levelDecreasePerBlock(2)
                             .tickRate(25)
                             .slopeFindDistance(3)
+                            .explosionResistance(100f))
+                    .register();
+    public static final FluidEntry<ForgeFlowingFluid.Flowing> CURDLED_MILK =
+            REGISTRATE.standardFluid("curdled_milk", CURDLED_MILK_TYPE_FACTORY)
+                    .lang("Curdled Milk")
+                    .properties(b -> b.viscosity(1500).density(900))
+                    .fluidProperties(p -> p
+                            .levelDecreasePerBlock(1)
+                            .tickRate(5)
+                            .slopeFindDistance(4)
                             .explosionResistance(100f))
                     .register();
 
@@ -237,7 +257,7 @@ public class FluidsRegistry {
         Player player = event.player;
         Level world = player.getCommandSenderWorld(); // Access the level directly
 
-        if (isInFryingOil(player, world) && world.isRaining()) {
+        if (isInFryingOil(player, world)) {
             applyLevitationEffect(player);
 
         }
@@ -255,24 +275,9 @@ public class FluidsRegistry {
     }
 
     private void applyLevitationEffect(Player player) {
-        MobEffectInstance levitation = new MobEffectInstance(MobEffects.LEVITATION, 100, 0);
+        MobEffectInstance levitation = new MobEffectInstance(ModEffects.OILED_UP.get(), 200, 0);
         player.addEffect(levitation);
-        if (player instanceof ServerPlayer) {
-            ServerPlayer serverPlayer = (ServerPlayer) player;
-            grantAdvancementCriterion(serverPlayer, "create_bic_bit:step_3", "got_levitation");
-        }
-    }
-    private void grantAdvancementCriterion(ServerPlayer player, String advancementID, String criterionKey) {
-        PlayerAdvancements playerAdvancements = player.getAdvancements();
-        Advancement advancement = player.server.getAdvancements().getAdvancement(new ResourceLocation(advancementID));
 
-        if (advancement != null && advancement.getCriteria().containsKey(criterionKey)) {
-            AdvancementProgress advancementProgress = playerAdvancements.getOrStartProgress(advancement);
-
-            if (!advancementProgress.isDone()) {
-                playerAdvancements.award(advancement, criterionKey);
-            }
-        }
     }
 
 }

@@ -14,6 +14,8 @@ public class ModEffects {
 
     public static final RegistryObject<MobEffect> UNANCHORED = MOB_EFFECTS.register("unanchored",
             () -> new UnanchoredEffect(MobEffectCategory.NEUTRAL, 800000980));
+    public static final RegistryObject<MobEffect> OILED_UP = MOB_EFFECTS.register("oiled_up",
+            () -> new OiledUpEffect(MobEffectCategory.NEUTRAL, 15249764));
 
     public static void register(IEventBus eventBus) {
         MOB_EFFECTS.register(eventBus);

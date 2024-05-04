@@ -27,8 +27,13 @@
   "advancements.first_taste_of_summer.descr": "捕捉一条鲱鱼",
   "advancements.nether_nibbles.title": "下界小吃！",
   "advancements.nether_nibbles.descr": "烤制你的第一批荷兰小圆饼",
+  "advancements.comfort_food.title": "这是安慰食物，对吗？",
+  "advancements.comfort_food.descr": "喝蛋黄酱",
+
 
   "effect.create_bic_bit.unanchored": "未锚定",
+  "effect.create_bic_bit.oiled_up": "油腻腻",
+
 
   "block.create_bic_bit.crystallised_oil": "结晶油",
   "block.create_bic_bit.frying_oil": "炸油",
@@ -37,6 +42,14 @@
   "block.create_bic_bit.sunflowerstem": "向日葵茎",
   "block.create_bic_bit.mayonnaise": "蛋黄酱",
   "block.create_bic_bit.ketchup": "番茄酱",
+  "block.create_bic_bit.curdled_milk": "凝乳",
+  "block.create_bic_bit.unripe_cheese": "未成熟的奶酪",
+  "block.create_bic_bit.waxed_unripe_cheese": "打蜡的未成熟奶酪",
+  "block.create_bic_bit.young_cheese": "年轻的奶酪",
+  "block.create_bic_bit.waxed_young_cheese": "打蜡的年轻奶酪",
+  "block.create_bic_bit.aged_cheese": "陈年奶酪",
+  "block.create_bic_bit.waxed_aged_cheese": "打蜡的陈年奶酪",
+
 
   "fluid_type.create_bic_bit.frying_oil" : "炸油",
   "fluid.create_bic_bit.frying_oil" : "炸油",
@@ -46,9 +59,11 @@
   "fluid.create_bic_bit.ketchup" : "番茄酱",
   "fluid_type.create_bic_bit.mayonnaise" : "蛋黄酱",
   "fluid.create_bic_bit.mayonnaise" : "蛋黄酱",
+  "fluid_type.create_bic_bit.curdled_milk": "凝乳",
+  "fluid.create_bic_bit.curdled_milk": "凝乳",
+
 
   "item_group.create_bic_bit.bicycles_bitterballen": "Create: Bitterballen",
-  "itemGroup.cbb_creative_tab": "Create: Bitterballen",
   "item.create_bic_bit.roasted_sunflower_seeds": "烤葵花籽",
   "item.create_bic_bit.sunflower_seeds": "葵花籽",
   "item.create_bic_bit.crushed_sunflower_seeds": "碾碎的葵花籽",
@@ -93,6 +108,20 @@
   "item.create_bic_bit.ketchup_bucket": "番茄酱桶",
   "item.create_bic_bit.mayonnaise_bucket": "蛋黄酱桶",
   "item.create_bic_bit.enderball": "末影球",
+  "item.create_bic_bit.curdled_milk_bucket": "凝乳桶",
+  "item.create_bic_bit.unripe_cheese_wedge": "未成熟的奶酪楔",
+  "item.create_bic_bit.young_cheese_wedge": "年轻的奶酪楔",
+  "item.create_bic_bit.aged_cheese_wedge": "陈年奶酪楔",
+  "item.create_bic_bit.frying_oil_bottle": "炸油瓶",
+  "item.create_bic_bit.ketchup_bottle": "番茄酱瓶",
+  "item.create_bic_bit.mayonnaise_bottle": "蛋黄酱瓶",
+  "item.create_bic_bit.coated_churros": "巧克力包裹油条",
+  "item.create_bic_bit.wrapped_coated_churros": "包装巧克力包裹油条",
+  "item.create_bic_bit.raw_eggball": "生蛋球",
+  "item.create_bic_bit.eggball": "蛋球",
+  "item.create_bic_bit.raw_cheese_souffle": "生奶酪蛋奶酥",
+  "item.create_bic_bit.cheese_souffle": "奶酪蛋奶酥",
+
 
   "create_bic_bit.subtitle.frying" : "炸油声音",
   "create.recipe.frying": "油炸",

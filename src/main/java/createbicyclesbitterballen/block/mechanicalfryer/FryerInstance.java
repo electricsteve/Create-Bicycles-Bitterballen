@@ -1,7 +1,5 @@
 package createbicyclesbitterballen.block.mechanicalfryer;
 
-
-import com.jozufozu.flywheel.api.Instancer;
 import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.api.instance.DynamicInstance;
 import com.jozufozu.flywheel.core.materials.oriented.OrientedData;

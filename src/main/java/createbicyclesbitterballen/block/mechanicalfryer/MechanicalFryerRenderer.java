@@ -7,23 +7,21 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.ShaftRenderer;
-import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import com.simibubi.create.foundation.render.CachedBufferer;
 import com.simibubi.create.foundation.render.SuperByteBuffer;
 import createbicyclesbitterballen.index.PartialsRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.core.Direction;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.util.RandomSource;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class MechanicalFryerRenderer extends ShaftRenderer<MechanicalFryerEntity> {
 
@@ -31,7 +29,7 @@ public class MechanicalFryerRenderer extends ShaftRenderer<MechanicalFryerEntity
         super(context);
     }
     @Override
-    public boolean shouldRenderOffScreen(MechanicalFryerEntity fryerEntity) {
+    public boolean shouldRenderOffScreen(@NotNull MechanicalFryerEntity fryerEntity) {
         return true;
     }
     @Override
@@ -113,7 +111,7 @@ public class MechanicalFryerRenderer extends ShaftRenderer<MechanicalFryerEntity
         for (int i = 0; i < renderCount; i++) {
             poseStack.pushPose();
 
-            long seed = stack.getCount() * 31 + stack.getItem().hashCode() + i;
+            long seed = stack.getCount() * 31L + stack.getItem().hashCode() + i;
             random.setSeed(seed);
 
             Vec3 position = new Vec3(posX, posY - (i * offsetIncrement), posZ); // Adjust posY based on loop index
