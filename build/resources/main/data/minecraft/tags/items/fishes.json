@@ -1,7 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "create_bic_bit:raw_herring",
-    "create_bic_bit:cooked_herring"
-  ]
-}
