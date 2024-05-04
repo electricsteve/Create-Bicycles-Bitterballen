@@ -4,9 +4,12 @@ import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import com.simibubi.create.foundation.utility.Lang;
+import io.github.fabricators_of_create.porting_lib.transfer.item.ItemStackHandlerContainer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.Level;
 import pyzpre.createbicyclesbitterballen.CreateBitterballen;
 import pyzpre.createbicyclesbitterballen.block.mechanicalfryer.DeepFryingRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +17,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 
@@ -28,19 +32,6 @@ public enum RecipeRegistry implements IRecipeTypeInfo {
     private final RecipeType<?> typeObject;
     private final Supplier<RecipeType<?>> type;
 
-    RecipeRegistry(Supplier<RecipeSerializer<?>> serializerSupplier, Supplier<RecipeType<?>> typeSupplier, boolean registerType) {
-        String name = Lang.asId(name());
-        id = CreateBitterballen.asResource(name);
-        serializerObject = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, id, serializerSupplier.get());
-        if (registerType) {
-            typeObject = typeSupplier.get();
-            Registry.register(BuiltInRegistries.RECIPE_TYPE, id, typeObject);
-            type = typeSupplier;
-        } else {
-            typeObject = null;
-            type = typeSupplier;
-        }
-    }
     RecipeRegistry(Supplier<RecipeSerializer<?>> serializerSupplier) {
         String name = Lang.asId(name());
         id = CreateBitterballen.asResource(name);
@@ -64,7 +55,19 @@ public enum RecipeRegistry implements IRecipeTypeInfo {
     }
     public static void register() {
     }
+    @Override
+    public <T extends RecipeType<?>> T getType() {
 
+        return (T) type.get();
+    }
+    public <C extends Container, T extends Recipe<C>> Optional<T> find(ItemStackHandlerContainer inv, Level world) {
+        return (Optional<T>) world.getRecipeManager()
+                .getRecipeFor(getType(), inv, world);
+    }
+    public RecipeType<DeepFryingRecipe> get() {
+        // Since the type field is a Supplier<RecipeType<?>>, we cast it to the specific RecipeType we need
+        return (RecipeType<DeepFryingRecipe>) type.get();
+    }
     @Override
     public ResourceLocation getId() {
         return id;
@@ -76,9 +79,6 @@ public enum RecipeRegistry implements IRecipeTypeInfo {
         return (T) serializerObject;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends RecipeType<?>> T getType() {
-        return (T) type.get();
-    }
+
+
 }

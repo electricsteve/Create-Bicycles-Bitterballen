@@ -19,6 +19,9 @@
 		],
 		"jei_mod_plugin": [
 			"pyzpre.createbicyclesbitterballen.compat.jei.CreateBicyclesBitterballenJEI"
+		],
+		"rei_client": [
+			"pyzpre.createbicyclesbitterballen.compat.rei.CreateBicyclesBitterballenREI"
 		]
 	},
 	"mixins": [
@@ -26,6 +29,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.15.3",
+		"fabric-resource-loader-v0": "*",
 		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*",

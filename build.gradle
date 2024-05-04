@@ -15,7 +15,7 @@ group = project.maven_group
 // Formats the mod version to include the Minecraft version and build number (if present)
 // example: 1.0.0+1.18.2-100
 String buildNumber = System.getenv("GITHUB_RUN_NUMBER")
-version = "${mod_version}+${minecraft_version}" + (buildNumber != null ? "-${buildNumber}" : "")
+version = "${mod_version}+${minecraft_version}-fabric" + (buildNumber != null ? "-${buildNumber}" : "")
 
 repositories {
 	maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
@@ -76,12 +76,11 @@ dependencies {
 		case "disabled": break
 		default: println("Unknown recipe viewer specified: ${recipe_viewer}. Must be JEI, REI, EMI, or disabled.")
 	}
-	// if you would like to add integration with them, uncomment them here.
-//    modCompileOnly("mezz.jei:jei-${minecraft_version}-fabric:${jei_fabric_version}")
-//    modCompileOnly("mezz.jei:jei-${minecraft_version}-common:${jei_fabric_version}")
-//    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${rei_version}")
-//    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${rei_version}")
-//    modCompileOnly("dev.emi:emi:${emi_version}")
+
+
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${rei_version}")
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${rei_version}")
+
 }
 
 processResources {

@@ -2,17 +2,15 @@ package pyzpre.createbicyclesbitterballen.index;
 
 
 
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllFluids;
-import com.simibubi.create.AllTags;
-import com.simibubi.create.content.decoration.palettes.AllPaletteBlocks;
-import com.simibubi.create.content.decoration.palettes.AllPaletteStoneTypes;
 import com.simibubi.create.content.fluids.VirtualFluid;
 import com.simibubi.create.foundation.fluid.FluidHelper;
 import com.simibubi.create.foundation.utility.Iterate;
+
 import com.tterrag.registrate.fabric.SimpleFlowableFluid;
 import com.tterrag.registrate.util.entry.FluidEntry;
+
 import io.github.fabricators_of_create.porting_lib.event.common.FluidPlaceBlockCallback;
+
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -20,25 +18,21 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.EmptyItemFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
-
 import javax.annotation.Nullable;
 
-
-import static com.mojang.text2speech.Narrator.LOGGER;
 import static net.minecraft.world.item.Items.BOWL;
 import static pyzpre.createbicyclesbitterballen.CreateBitterballen.REGISTRATE;
 
@@ -72,7 +66,17 @@ public class FluidsRegistry {
                             .tickRate(25)
                             .flowSpeed(3)
                             .blastResistance(100f))
-                    .fluidAttributes(() -> new CreateBitterballenAttributeHandler("fluid.create_bic_bit.ketchup", 1500, 1400))
+                    .fluidAttributes(() -> new CreateBitterballenAttributeHandler("fluid.create_bic_bit.mayonnaise", 1500, 1400))
+                    .register();
+    public static final FluidEntry<SimpleFlowableFluid.Flowing> CURDLED_MILK =
+            REGISTRATE.fluid("curdled_milk", new ResourceLocation("create_bic_bit:block/curdled_milk_still"), new ResourceLocation("create_bic_bit:block/curdled_milk_flow"))
+                    .lang("Curdled Milk")
+                    .tag(FluidTags.WATER)
+                    .fluidProperties(p -> p.levelDecreasePerBlock(2)
+                            .tickRate(25)
+                            .flowSpeed(3)
+                            .blastResistance(100f))
+                    .fluidAttributes(() -> new CreateBitterballenAttributeHandler("fluid.create_bic_bit.curdled_milk", 1500, 1400))
                     .register();
     public static final FluidEntry<VirtualFluid> STAMPPOT =
             REGISTRATE.virtualFluid("stamppot", new ResourceLocation("create_bic_bit:block/stamppot_still"), new ResourceLocation("create_bic_bit:block/stamppot_still"))
@@ -112,12 +116,10 @@ public class FluidsRegistry {
     }
 }
     public static void registerFluidInteractions() {
-        LOGGER.info("registerFluidInteractions method called");
         // fabric: no fluid interaction API, use legacy method
         FluidPlaceBlockCallback.EVENT.register(FluidsRegistry::whenFluidsMeet);
     }
     public static BlockState whenFluidsMeet(LevelAccessor world, BlockPos pos, BlockState blockState) {
-        LOGGER.info("whenFluidsMeet method called");
         FluidState fluidState = blockState.getFluidState();
 
         if (fluidState.isSource() && FluidHelper.isLava(fluidState.getType()))
@@ -137,16 +139,13 @@ public class FluidsRegistry {
     }
     @Nullable
     public static BlockState getLavaInteraction (FluidState fluidState)  {
-        LOGGER.info("getLavaInteraction method called");
         Fluid fluid = fluidState.getType();
         if (fluid.isSame(FRYING_OIL.get())) {
-            LOGGER.info("Scoria Placed");
             return BlockRegistry.CRYSTALLISED_OIL
                     .get()
                     .defaultBlockState();
 
         }
-        LOGGER.info("Scoria Not Placed");
         return null;
     }
 }

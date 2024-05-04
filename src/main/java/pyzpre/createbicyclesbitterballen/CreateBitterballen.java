@@ -90,6 +90,7 @@ public class CreateBitterballen implements ModInitializer, ClientModInitializer 
 		BlockRenderLayerMap.INSTANCE.putBlock(BlockRegistry.SUNFLOWERSTEM.get(), RenderType.cutout());
 		PartialsRegistry.init();
 		ClientEvents.register();
+		LootTables.modifyLootTables();
 		CommonEvents.register();
 		PonderIndex.register();
 
@@ -101,7 +102,7 @@ public class CreateBitterballen implements ModInitializer, ClientModInitializer 
 	private void onServerTick(MinecraftServer server) {
 		for (ServerLevel world : server.getAllLevels()) {
 			for (Player player : world.players()) {
-				if (isInFryingOil(player, world) && world.isRaining()) {
+				if (isInFryingOil(player, world)) {
 					applyLevitationEffect(player);
 				}
 			}
@@ -120,12 +121,8 @@ public class CreateBitterballen implements ModInitializer, ClientModInitializer 
 	}
 
 	private void applyLevitationEffect(Player player) {
-		MobEffectInstance levitation = new MobEffectInstance(MobEffects.LEVITATION, 100, 0);
+		MobEffectInstance levitation = new MobEffectInstance(ModEffects.OILED_UP, 200, 0);
 		player.addEffect(levitation);
-		if (player instanceof ServerPlayer) {
-			ServerPlayer serverPlayer = (ServerPlayer) player;
-			grantAdvancementCriterion(serverPlayer, "create_bic_bit:step_3", "got_levitation");
-		}
 	}
 
 }

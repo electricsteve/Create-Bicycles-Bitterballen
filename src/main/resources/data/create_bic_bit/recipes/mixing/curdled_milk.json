@@ -1,0 +1,19 @@
+{
+  "type": "create:mixing",
+  "heatRequirement": "heated",
+  "ingredients": [
+    {
+      "item": "create_bic_bit:crushed_nether_wart"
+    },
+    {
+      "amount": 20250,
+      "fluid": "milk:still_milk"
+    }
+  ],
+  "results": [
+    {
+      "amount": 20250,
+      "fluid": "create_bic_bit:curdled_milk"
+    }
+  ]
+}

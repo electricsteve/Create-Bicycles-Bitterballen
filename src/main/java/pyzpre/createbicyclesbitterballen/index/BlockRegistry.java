@@ -6,6 +6,8 @@ import com.simibubi.create.content.processing.AssemblyOperatorBlockItem;
 import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import net.minecraft.world.level.block.Blocks;
+import pyzpre.createbicyclesbitterballen.block.cheese.*;
 import pyzpre.createbicyclesbitterballen.block.mechanicalfryer.MechanicalFryer;
 import pyzpre.createbicyclesbitterballen.block.sunflower.SunflowerStem;
 import net.minecraft.world.level.block.GlassBlock;
@@ -22,14 +24,88 @@ import static pyzpre.createbicyclesbitterballen.CreateBitterballen.REGISTRATE;
 public class BlockRegistry {
 	public static final BlockEntry<MechanicalFryer> MECHANICAL_FRYER =
 			REGISTRATE.block("mechanical_fryer", MechanicalFryer::new)
-			.initialProperties(SharedProperties::copperMetal)
-			.properties(p -> p.noOcclusion().strength(2.0f))
-			.transform(pickaxeOnly())
-			.blockstate(BlockStateGen.horizontalBlockProvider(true))
-			.transform(BlockStressDefaults.setImpact(4.0))
-			.item(AssemblyOperatorBlockItem::new)
-			.transform(customItemModel())
-			.register();
+					.initialProperties(SharedProperties::copperMetal)
+					.properties(p -> p.noOcclusion().strength(2.0f))
+					.transform(pickaxeOnly())
+					.blockstate(BlockStateGen.horizontalBlockProvider(true))
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+
+	public static final BlockEntry<UnripeCheeseBlock> UNRIPE_CHEESE =
+			REGISTRATE.block("unripe_cheese", UnripeCheeseBlock::new)
+					.initialProperties(() -> Blocks.CAKE)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.transform(pickaxeOnly())
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item()
+					.build()
+					.lang("Unripe Cheese")
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+	public static final BlockEntry<WaxedUnripeCheeseBlock> WAXED_UNRIPE_CHEESE =
+			REGISTRATE.block("waxed_unripe_cheese", WaxedUnripeCheeseBlock::new)
+					.initialProperties(() -> Blocks.CAKE)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.transform(pickaxeOnly())
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item()
+					.build()
+					.lang("Waxed Unripe Cheese")
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+	public static final BlockEntry<YoungCheeseBlock> YOUNG_CHEESE =
+			REGISTRATE.block("young_cheese", YoungCheeseBlock::new)
+					.initialProperties(() -> Blocks.CAKE)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.transform(pickaxeOnly())
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item()
+					.build()
+					.lang("Young Cheese")
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+	public static final BlockEntry<WaxedYoungCheeseBlock> WAXED_YOUNG_CHEESE =
+			REGISTRATE.block("waxed_young_cheese", WaxedYoungCheeseBlock::new)
+					.initialProperties(() -> Blocks.CAKE)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.transform(pickaxeOnly())
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item()
+					.build()
+					.lang("Waxed Young Cheese")
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+	public static final BlockEntry<AgedCheeseBlock> AGED_CHEESE =
+			REGISTRATE.block("aged_cheese", AgedCheeseBlock::new)
+					.initialProperties(() -> Blocks.CAKE)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.transform(pickaxeOnly())
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item()
+					.build()
+					.lang("Aged Cheese")
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+	public static final BlockEntry<WaxedAgedCheeseBlock> WAXED_AGED_CHEESE =
+			REGISTRATE.block("waxed_aged_cheese", WaxedAgedCheeseBlock::new)
+					.initialProperties(() -> Blocks.CAKE)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.transform(pickaxeOnly())
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item()
+					.build()
+					.lang("Waxed Aged Cheese")
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+
 
 	public static final BlockEntry<GlassBlock> CRYSTALLISED_OIL =
 			REGISTRATE.block("crystallised_oil", GlassBlock::new)
