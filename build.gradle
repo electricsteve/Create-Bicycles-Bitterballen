@@ -23,7 +23,7 @@ apply plugin: 'org.spongepowered.mixin'
 jarJar.enable()
 
 
-version = '0.0.70'
+version = '0.0.80'
 group = 'com.pyzpre.Create-Bicycles-Bitterballen'
 archivesBaseName = 'createbicbit-1.20.1'
 
@@ -112,12 +112,20 @@ repositories {
     maven {
         url = 'https://repo.spongepowered.org/repository/maven-public'
     }
+    maven {
+        url "https://www.cursemaven.com/"
+        content {
+            includeGroup "curse.maven"
+        }
+
+    }
 }
 dependencies {
     minecraft 'net.minecraftforge:forge:1.20.1-47.1.0'
     implementation fg.deobf("com.simibubi.create:create-${create_minecraft_version}:${create_version}:slim") { transitive = false }
     implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+    implementation fg.deobf("curse.maven:appleskin-248787:4770828")
 
 
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))

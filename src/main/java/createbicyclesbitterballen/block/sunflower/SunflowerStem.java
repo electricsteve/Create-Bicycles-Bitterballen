@@ -23,8 +23,6 @@ public class SunflowerStem extends DoublePlantBlock implements BonemealableBlock
         super(properties.offsetType(BlockBehaviour.OffsetType.XZ));
     }
 
-
-
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(AGE);
@@ -69,15 +67,11 @@ public class SunflowerStem extends DoublePlantBlock implements BonemealableBlock
         }
     }
 
-
-
-
     @Override
     public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state, boolean isClient) {
         if (state.getValue(HALF) == DoubleBlockHalf.LOWER) {
             return !isMaxAge(state);
         } else {
-            // Check if the lower part is not at max age
             BlockState lowerPartState = world.getBlockState(pos.below());
             return lowerPartState.getBlock() == this && !isMaxAge(lowerPartState);
         }
@@ -93,7 +87,6 @@ public class SunflowerStem extends DoublePlantBlock implements BonemealableBlock
         if (state.getValue(HALF) == DoubleBlockHalf.LOWER) {
             growStemOrSunflower(world, pos, state);
         } else {
-            // Handling bonemeal on the upper part
             BlockPos lowerPartPos = pos.below();
             BlockState lowerPartState = world.getBlockState(lowerPartPos);
             if (lowerPartState.getBlock() == this) {

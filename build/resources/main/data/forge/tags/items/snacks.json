@@ -7,6 +7,8 @@
     "create_bic_bit:fries",
     "create_bic_bit:oliebollen",
     "create_bic_bit:enderball",
-    "create_bic_bit:churros"
+    "create_bic_bit:churros",
+    "create_bic_bit:cheese_souffle",
+    "create_bic_bit:eggball"
   ]
 }

@@ -48,7 +48,7 @@ public class CreateBicBitMod
 		BlockRegistry.register();
 		CreateBicBitModItems.register();
 		FluidsRegistry.register();
-
+		EntityTypeRegistry.register();
 		RecipeRegistry.register(eventBus);
 		ModEffects.register(eventBus);
 		eventBus.addListener(this::clientSetup);

@@ -3,25 +3,16 @@ package createbicyclesbitterballen.block.mechanicalfryer;
 
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
-import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour.TankSegment;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.ProcessingRecipeParams;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
 import com.simibubi.create.foundation.item.SmartInventory;
-import com.simibubi.create.foundation.recipe.DummyCraftingContainer;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
-import com.simibubi.create.foundation.utility.Iterate;
-import createbicyclesbitterballen.index.BlockRegistry;
 import createbicyclesbitterballen.index.RecipeRegistry;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,7 +24,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-import static com.mojang.text2speech.Narrator.LOGGER;
+
 
 public class DeepFryingRecipe extends ProcessingRecipe<SmartInventory> {
 
@@ -67,122 +58,80 @@ public class DeepFryingRecipe extends ProcessingRecipe<SmartInventory> {
     private static boolean apply(BasinBlockEntity basin, MechanicalFryerEntity fryer, Recipe<?> recipe, boolean test) {
         boolean isDeepFryingRecipe = recipe instanceof DeepFryingRecipe;
         IItemHandler availableItems = fryer.inputInv;
-        IFluidHandler availableFluids = basin.getCapability(ForgeCapabilities.FLUID_HANDLER)
-                .orElse(null);
+        IFluidHandler availableFluids = basin.getCapability(ForgeCapabilities.FLUID_HANDLER).orElse(null);
 
         if (availableItems == null || availableFluids == null)
             return false;
 
+
         BlazeBurnerBlock.HeatLevel heat = BasinBlockEntity.getHeatLevelOf(basin.getLevel()
-                .getBlockState(basin.getBlockPos()
-                        .below(1)));
-        if (isDeepFryingRecipe && !((DeepFryingRecipe) recipe).getRequiredHeat()
-                .testBlazeBurner(heat))
+                .getBlockState(basin.getBlockPos().below(1)));
+        if (isDeepFryingRecipe && !((DeepFryingRecipe) recipe).getRequiredHeat().testBlazeBurner(heat))
             return false;
 
+        ItemStack inputStack = availableItems.getStackInSlot(0);
+        int itemCount = inputStack.getCount(); // Get initial item count
 
-        List<ItemStack> recipeOutputItems = new ArrayList<>();
-        List<FluidStack> recipeOutputFluids = new ArrayList<>();
+        if (itemCount <= 0)
+            return false;  // No items to process
 
-        List<Ingredient> ingredients = new LinkedList<>(recipe.getIngredients());
         List<FluidIngredient> fluidIngredients =
                 isDeepFryingRecipe ? ((DeepFryingRecipe) recipe).getFluidIngredients() : Collections.emptyList();
 
-        for (boolean simulate : Iterate.trueAndFalse) {
-
-            if (!simulate && test)
-                return true;
-
-            int[] extractedItemsFromSlot = new int[availableItems.getSlots()];
-            int[] extractedFluidsFromTank = new int[availableFluids.getTanks()];
-
-            Ingredients: for (int i = 0; i < ingredients.size(); i++) {
-                Ingredient ingredient = ingredients.get(i);
-
-                for (int slot = 0; slot < availableItems.getSlots(); slot++) {
-                    if (simulate && availableItems.getStackInSlot(slot)
-                            .getCount() <= extractedItemsFromSlot[slot])
-                        continue;
-                    ItemStack extracted = availableItems.extractItem(slot, 1, true);
-                    if (!ingredient.test(extracted))
-                        continue;
-                    if (!simulate)
-                        availableItems.extractItem(slot, 1, false);
-                    extractedItemsFromSlot[slot]++;
-                    continue Ingredients;
+        boolean simulate = false;
+        do {
+            for (int i = 0; i < itemCount; i++) {
+                if (!test && !simulate) {
+                    for (FluidIngredient fluidIngredient : fluidIngredients) {
+                        if (!consumeFluids(fluidIngredient, availableFluids, false)) {
+                            return false; // Failed to consume fluids, stop processing
+                        }
+                    }
                 }
 
-                // something wasn't found
-                return false;
+                if (!simulate) {
+                    inputStack.shrink(1);  // Consume one item per cycle
+                    // Generate and handle outputs
+                    List<ItemStack> recipeOutputItems = generateOutputs(recipe, basin, 1);  // Generate outputs per item
+                    for (ItemStack itemStack : recipeOutputItems) {
+                        if (!ItemHandlerHelper.insertItemStacked(fryer.outputInv, itemStack, false).isEmpty()) {
+                            return false;
+                        }
+                    }
+                }
             }
+            simulate = !simulate; // Toggle simulate after first real run
+        } while (!test && simulate);
 
-            boolean fluidsAffected = false;
-            FluidIngredients: for (int i = 0; i < fluidIngredients.size(); i++) {
-                FluidIngredient fluidIngredient = fluidIngredients.get(i);
+        return true;
+    }
+    private static List<ItemStack> generateOutputs(Recipe<?> recipe, BasinBlockEntity basin, int quantity) {
+        List<ItemStack> outputs = new ArrayList<>();
+        if (recipe instanceof BasinRecipe) {
+            // Ensure that each item in rollResults is multiplied by quantity
+            for (ItemStack result : ((BasinRecipe) recipe).rollResults()) {
+                ItemStack stack = result.copy();
+                stack.setCount(result.getCount() * quantity);
+                outputs.add(stack);
+            }
+        } else {
+            ItemStack result = recipe.getResultItem(basin.getLevel().registryAccess()).copy();
+            result.setCount(result.getCount() * quantity);
+            outputs.add(result);
+        }
+        return outputs;
+    }
+    private static boolean consumeFluids(FluidIngredient fluidIngredient, IFluidHandler fluidHandler, boolean simulate) {
+        for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
+            FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);
+            if (fluidIngredient.test(fluidInTank)) {
                 int amountRequired = fluidIngredient.getRequiredAmount();
-
-                for (int tank = 0; tank < availableFluids.getTanks(); tank++) {
-                    FluidStack fluidStack = availableFluids.getFluidInTank(tank);
-                    if (simulate && fluidStack.getAmount() <= extractedFluidsFromTank[tank])
-                        continue;
-                    if (!fluidIngredient.test(fluidStack))
-                        continue;
-                    int drainedAmount = Math.min(amountRequired, fluidStack.getAmount());
-                    if (!simulate) {
-                        fluidStack.shrink(drainedAmount);
-                        fluidsAffected = true;
-                    }
-                    amountRequired -= drainedAmount;
-                    if (amountRequired != 0)
-                        continue;
-                    extractedFluidsFromTank[tank] += drainedAmount;
-                    continue FluidIngredients;
-                }
-
-                // something wasn't found
-                return false;
-            }
-
-            if (fluidsAffected) {
-                basin.getBehaviour(SmartFluidTankBehaviour.INPUT)
-                        .forEach(TankSegment::onFluidStackChanged);
-                basin.getBehaviour(SmartFluidTankBehaviour.OUTPUT)
-                        .forEach(TankSegment::onFluidStackChanged);
-            }
-
-            if (!simulate) {
-                // Clear the list to prepare for actual output collection
-                recipeOutputItems.clear();
-
-                if (recipe instanceof BasinRecipe basinRecipe) {
-                    recipeOutputItems.addAll(basinRecipe.rollResults());
-                } else {
-                    recipeOutputItems.add(recipe.getResultItem(basin.getLevel().registryAccess()));
-                }
-
-                // Now attempt to insert these collected items into the fryer's output
-                for (ItemStack itemStack : recipeOutputItems) {
-                    ItemStack remaining = ItemHandlerHelper.insertItemStacked(fryer.outputInv, itemStack.copy(), false);
-                    if (!remaining.isEmpty()) {
-                        LOGGER.warn("Output inventory full, could not insert item: {}", itemStack);
-                        // Handle the case where the item cannot be inserted
-                        // E.g., abort processing or handle overflow
-                        return false; // Optional: Decide on behavior for full inventory
-                    }
-                }
-            } else {
-                // Actual insertion into the fryer's output inventory
-                for (ItemStack itemStack : recipeOutputItems) {
-                    ItemStack remaining = ItemHandlerHelper.insertItemStacked(fryer.outputInv, itemStack, false); // false to actually insert
-                    if (!remaining.isEmpty()) {
-                        LOGGER.warn("Failed to insert item into fryer's output inventory: {}", itemStack);
-                        // Optionally handle overflow, e.g., dropping items in the world
-                    }
-                }
+                FluidStack drained = fluidHandler.drain(new FluidStack(fluidInTank, amountRequired), simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
+                return drained.getAmount() == amountRequired;  // Not enough fluid was drained.
+// Required fluid was successfully consumed.
             }
         }
-
-        return true; // Recipe successfully applied
+        return false;  // No matching fluid found in the tanks.
     }
 
 

@@ -8,10 +8,8 @@ import com.simibubi.create.content.fluids.FluidFX;
 import com.simibubi.create.content.kinetics.belt.behaviour.DirectBeltInputBehaviour;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
-import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
 import com.simibubi.create.content.processing.recipe.HeatCondition;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
-import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.fluid.FluidIngredient;
@@ -35,18 +33,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -55,6 +49,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import org.jetbrains.annotations.NotNull;
 
 
 public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
@@ -70,9 +65,9 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
     public int processingTicks;
     public boolean running;
 
+
     public MechanicalFryerEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        // Use the custom handler with a lambda that calls inventoryChanged
         inputInv  = new SmartInventory(1, this);
         outputInv = new SmartInventory(9, this);
         capability = LazyOptional.of(() -> new FryerInventoryHandler(inputInv, outputInv));
@@ -87,7 +82,7 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
     public float getRenderedHeadOffset(float partialTicks) {
         int localTick;
         float offset = 0;
-        if (running) {
+        if (running && speed != 0) {
             if (runningTicks < 20) {
                 localTick = runningTicks;
                 float num = (localTick + partialTicks) / 20f;
@@ -140,33 +135,33 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
     public void tick() {
         super.tick();
 
-        boolean isOutputFull = false;
-        for (int i = 0; i < outputInv.getSlots(); i++) {
-            if (outputInv.getStackInSlot(i).getCount() < outputInv.getSlotLimit(i)) {
-                isOutputFull = false;
-                break;
-            } else {
-                isOutputFull = true;
-                break;
-            }
-        }
-
-        if (getSpeed() == 0 || isOutputFull) {
-            return;
-        }
 
         float speed = Math.abs(getSpeed());
         boolean canStartProcessing = hasMatchingRecipe();
         float recipeSpeed = 1;
 
+
+        if (getSpeed() == 0) {
+            if (running) { // If it was running, reset the state
+                resetAnimationAndProcessing();
+            }
+        }
+
+
+
+
         if (!running && canStartProcessing) {
+
             running = true;
             runningTicks = 0;
             shouldRecalculateProcessingTicks = true;
+
             if (currentRecipe instanceof ProcessingRecipe) {
                 int t = ((ProcessingRecipe<?>) currentRecipe).getProcessingDuration();
-                if (t != 0)
+                if (t != 0) {
                     recipeSpeed = t / 100f;
+                }
+
             }
         }
 
@@ -226,8 +221,8 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
 
                 if (runningTicks == 20 && shouldRecalculateProcessingTicks) {
                     if (canStartProcessing) {
-                        if (lastRecipe != null && lastRecipe instanceof ProcessingRecipe) {
-                            int duration = ((ProcessingRecipe<?>) lastRecipe).getProcessingDuration();
+                        if (lastRecipe != null) {
+                            int duration = lastRecipe.getProcessingDuration();
                             if (duration != 0) recipeSpeed = duration / 100f;
                         }
                         processingTicks = Mth.clamp((Mth.log2((int) (512 / speed))) * Mth.ceil(recipeSpeed * 15) + 1, 1, 512);
@@ -242,16 +237,22 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
         ResourceLocation iceTag = new ResourceLocation("create_bic_bit", "ice");
         return stack.is(net.minecraft.tags.ItemTags.create(iceTag));
     }
+    private void resetAnimationAndProcessing() {
+        running = false;
+        processingTicks = 0;
+        runningTicks = 0;
+        }
 
-    private void grantAdvancementCriterion(ServerPlayer player, String advancementID, String criterionKey) {
+
+    private void grantAdvancementCriterion(ServerPlayer player) {
         PlayerAdvancements playerAdvancements = player.getAdvancements();
-        Advancement advancement = player.server.getAdvancements().getAdvancement(new ResourceLocation(advancementID));
+        Advancement advancement = player.server.getAdvancements().getAdvancement(new ResourceLocation("create_bic_bit:fry_about_it"));
 
-        if (advancement != null && advancement.getCriteria().containsKey(criterionKey)) {
+        if (advancement != null && advancement.getCriteria().containsKey("ice_exploded")) {
             AdvancementProgress advancementProgress = playerAdvancements.getOrStartProgress(advancement);
 
             if (!advancementProgress.isDone()) {
-                playerAdvancements.award(advancement, criterionKey);
+                playerAdvancements.award(advancement, "ice_exploded");
             }
         }
     }
@@ -263,7 +264,7 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
             AABB area = new AABB(worldPosition).inflate(radius);
             List<ServerPlayer> players = level.getEntitiesOfClass(ServerPlayer.class, area);
             for (ServerPlayer player : players) {
-                grantAdvancementCriterion(player, "create_bic_bit:fry_about_it", "ice_exploded");
+                grantAdvancementCriterion(player);
             }
         }
     }
@@ -272,36 +273,33 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
 
 
     private boolean hasMatchingRecipe() {
-
-        if (inputInv.getStackInSlot(0).isEmpty()) return false;
+        if (inputInv.getStackInSlot(0).isEmpty()) {
+            return false;
+        }
 
         Optional<DeepFryingRecipe> recipeOpt = findMatchingRecipeForItem(inputInv.getStackInSlot(0), level);
-        if (!recipeOpt.isPresent()) {
+        if (recipeOpt.isEmpty()) {
             return false;
         }
-
 
         Optional<BasinBlockEntity> basinOpt = getBasin();
-        if (!basinOpt.isPresent()) {
-
+        if (basinOpt.isEmpty()) {
             return false;
         }
-
 
         DeepFryingRecipe recipe = recipeOpt.get();
         if (!areBasinFluidsMatching(basinOpt.get(), recipe)) {
-
             return false;
         }
-        HeatCondition requiredHeat = recipeOpt.get().getRequiredHeat();
 
-
+        HeatCondition requiredHeat = recipe.getRequiredHeat();
         if (!isBlazeBurnerConfigured(requiredHeat)) {
             return false;
         }
 
         return true;
     }
+
     @Override
     public void destroy() {
         super.destroy();
@@ -314,7 +312,7 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
             return true;
         }
 
-        if (level == null || worldPosition == null) {
+        if (level == null) {
             return false;
         }
 
@@ -342,7 +340,6 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
 
     private boolean areBasinFluidsMatching(BasinBlockEntity basin, DeepFryingRecipe recipe) {
         IFluidHandler fluidHandler = basin.getCapability(ForgeCapabilities.FLUID_HANDLER).orElse(null);
-        if (fluidHandler == null) return false;
 
         for (FluidIngredient fluidIngredient : recipe.getFluidIngredients()) {
             boolean ingredientMatched = false;
@@ -370,7 +367,7 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
 
     public void renderParticles() {
         Optional<BasinBlockEntity> basin = getBasin();
-        if (!basin.isPresent() || level == null)
+        if (basin.isEmpty() || level == null)
             return;
 
         for (SmartFluidTankBehaviour behaviour : basin.get()
@@ -411,12 +408,6 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
     }
 
     @Override
-    public boolean continueWithPreviousRecipe() {
-        runningTicks = 20;
-        return true;
-    }
-
-    @Override
     protected void onBasinRemoved() {
         if (!running)
             return;
@@ -450,11 +441,8 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
         }
     }
 
-    public int getProcessingSpeed() {
-        return Mth.clamp((int) Math.abs(getSpeed() / 16f), 1, 512);
-    }
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
         if (isItemHandlerCap(cap))
             return capability.cast();
         return super.getCapability(cap, side);
@@ -487,7 +475,7 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
         }
 
         @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             if (outputInv == getHandlerFromIndex(getIndexForSlot(slot)))
                 return false;
             return canProcess(stack) && super.isItemValid(slot, stack);
@@ -495,7 +483,7 @@ public class MechanicalFryerEntity extends FryerOperatingBlockEntity {
 
 
         @Override
-        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
             if (outputInv == getHandlerFromIndex(getIndexForSlot(slot)))
                 return stack;
             if (!isItemValid(slot, stack))

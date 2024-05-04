@@ -5,13 +5,12 @@ import com.simibubi.create.content.kinetics.BlockStressDefaults;
 import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import createbicyclesbitterballen.block.cheese.*;
 import createbicyclesbitterballen.block.mechanicalfryer.MechanicalFryer;
 import com.simibubi.create.content.processing.AssemblyOperatorBlockItem;
 import createbicyclesbitterballen.block.sunflower.SunflowerStem;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.GlassBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.entity.decoration.PaintingVariant;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
@@ -32,6 +31,80 @@ public class BlockRegistry {
 			.item(AssemblyOperatorBlockItem::new)
 			.transform(customItemModel())
 			.register();
+
+	public static final BlockEntry<UnripeCheeseBlock> UNRIPE_CHEESE =
+			REGISTRATE.block("unripe_cheese", UnripeCheeseBlock::new)
+					.initialProperties(() -> Blocks.CAKE)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.transform(pickaxeOnly())
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item()
+					.build()
+					.lang("Unripe Cheese")
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+	public static final BlockEntry<WaxedUnripeCheeseBlock> WAXED_UNRIPE_CHEESE =
+			REGISTRATE.block("waxed_unripe_cheese", WaxedUnripeCheeseBlock::new)
+					.initialProperties(() -> Blocks.CAKE)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.transform(pickaxeOnly())
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item()
+					.build()
+					.lang("Waxed Unripe Cheese")
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+	public static final BlockEntry<YoungCheeseBlock> YOUNG_CHEESE =
+			REGISTRATE.block("young_cheese", YoungCheeseBlock::new)
+					.initialProperties(() -> Blocks.CAKE)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.transform(pickaxeOnly())
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item()
+					.build()
+					.lang("Young Cheese")
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+	public static final BlockEntry<WaxedYoungCheeseBlock> WAXED_YOUNG_CHEESE =
+			REGISTRATE.block("waxed_young_cheese", WaxedYoungCheeseBlock::new)
+					.initialProperties(() -> Blocks.CAKE)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.transform(pickaxeOnly())
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item()
+					.build()
+					.lang("Waxed Young Cheese")
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+	public static final BlockEntry<AgedCheeseBlock> AGED_CHEESE =
+			REGISTRATE.block("aged_cheese", AgedCheeseBlock::new)
+					.initialProperties(() -> Blocks.CAKE)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.transform(pickaxeOnly())
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item()
+					.build()
+					.lang("Aged Cheese")
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+	public static final BlockEntry<WaxedAgedCheeseBlock> WAXED_AGED_CHEESE =
+			REGISTRATE.block("waxed_aged_cheese", WaxedAgedCheeseBlock::new)
+					.initialProperties(() -> Blocks.CAKE)
+					.properties(p -> p.sound(SoundType.WOOD))
+					.transform(pickaxeOnly())
+					.transform(BlockStressDefaults.setImpact(4.0))
+					.item()
+					.build()
+					.lang("Waxed Aged Cheese")
+					.item(AssemblyOperatorBlockItem::new)
+					.transform(customItemModel())
+					.register();
+
 
 	public static final BlockEntry<GlassBlock> CRYSTALLISED_OIL =
 			REGISTRATE.block("crystallised_oil", GlassBlock::new)

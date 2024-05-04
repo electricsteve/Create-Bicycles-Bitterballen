@@ -27,8 +27,13 @@
   "advancements.first_taste_of_summer.descr": "Vang een Haring",
   "advancements.nether_nibbles.title": "Nether Hapjes!",
   "advancements.nether_nibbles.descr": "Bak je Eerste Kruidnoten",
+  "advancements.comfort_food.title": "Het is Troostvoedsel, Toch?",
+  "advancements.comfort_food.descr": "Drink Mayonaise",
+
 
   "effect.create_bic_bit.unanchored": "Onverankerd",
+  "effect.create_bic_bit.oiled_up": "Olieachtig",
+
 
   "block.create_bic_bit.crystallised_oil": "Gekristalliseerde Olie",
   "block.create_bic_bit.frying_oil": "Frituurolie",
@@ -37,6 +42,14 @@
   "block.create_bic_bit.stamppot": "Stamppot",
   "block.create_bic_bit.mechanical_fryer": "Mechanische Friteuse",
   "block.create_bic_bit.sunflowerstem": "Zonnebloemsteel",
+  "block.create_bic_bit.curdled_milk": "Gestremde Melk",
+  "block.create_bic_bit.unripe_cheese": "Onrijpe Kaas",
+  "block.create_bic_bit.waxed_unripe_cheese": "Gewaxte Onrijpe Kaas",
+  "block.create_bic_bit.young_cheese": "Jonge Kaas",
+  "block.create_bic_bit.waxed_young_cheese": "Gewaxte Jonge Kaas",
+  "block.create_bic_bit.aged_cheese": "Oude Kaas",
+  "block.create_bic_bit.waxed_aged_cheese": "Gewaxte Oude Kaas",
+
 
   "fluid_type.create_bic_bit.frying_oil" : "Frituurolie",
   "fluid.create_bic_bit.frying_oil" : "Frituurolie",
@@ -46,6 +59,9 @@
   "fluid.create_bic_bit.ketchup": "Ketchup",
   "fluid_type.create_bic_bit.mayonnaise": "Mayonaise",
   "fluid.create_bic_bit.mayonnaise": "Mayonaise",
+  "fluid_type.create_bic_bit.curdled_milk": "Gestremde Melk",
+  "fluid.create_bic_bit.curdled_milk": "Gestremde Melk",
+
 
   "item_group.create_bic_bit.bicycles_bitterballen": "Create: Bitterballen",
   "item.create_bic_bit.roasted_sunflower_seeds": "Geroosterde Zonnebloempitten",
@@ -92,6 +108,20 @@
   "item.create_bic_bit.ketchup_bucket": "Ketchup Emmer",
   "item.create_bic_bit.mayonnaise_bucket": "Mayonaise Emmer",
   "item.create_bic_bit.enderball": "Enderbal",
+  "item.create_bic_bit.curdled_milk_bucket": "Gestremde Melk Emmer",
+  "item.create_bic_bit.unripe_cheese_wedge": "Punt Onrijpe Kaas",
+  "item.create_bic_bit.young_cheese_wedge": "Punt Jonge Kaas",
+  "item.create_bic_bit.aged_cheese_wedge": "Punt Oude Kaas",
+  "item.create_bic_bit.frying_oil_bottle": "Frituurolie Fles",
+  "item.create_bic_bit.ketchup_bottle": "Ketchupfles",
+  "item.create_bic_bit.mayonnaise_bottle": "Mayonaisefles",
+  "item.create_bic_bit.coated_churros": "Chocolade Bedekte Churros",
+  "item.create_bic_bit.wrapped_coated_churros": "Ingepakte Chocolade Bedekte Churros",
+  "item.create_bic_bit.raw_eggball": "Rauwe Eierbal",
+  "item.create_bic_bit.eggball": "Eierbal",
+  "item.create_bic_bit.raw_cheese_souffle": "Rauwe Kaas Soufflé",
+  "item.create_bic_bit.cheese_souffle": "Kaas Soufflé",
+
 
   "create_bic_bit.subtitle.frying" : "Frituur geluiden",
   "create.recipe.frying": "Frituren",

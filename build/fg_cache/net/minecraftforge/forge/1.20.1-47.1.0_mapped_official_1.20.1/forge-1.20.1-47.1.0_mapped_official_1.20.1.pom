@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.minecraftforge</groupId>
   <artifactId>forge</artifactId>
-  <version>1.20.1-47.1.0_mapped_official_1.20.1_at_aaff95f78a1bec34497dbfc843072558b0091c24</version>
+  <version>1.20.1-47.1.0_mapped_official_1.20.1_at_dab3347a05cd024201856c4a958cf429bf9deaa2</version>
   <name>forge</name>
   <dependencies>
     <dependency>
