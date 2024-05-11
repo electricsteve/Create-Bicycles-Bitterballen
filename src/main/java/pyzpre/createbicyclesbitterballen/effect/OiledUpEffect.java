@@ -30,6 +30,7 @@ public class OiledUpEffect extends MobEffect {
 
     @Override
     public void applyEffectTick(LivingEntity entity, int amplifier) {
+        if (!(entity instanceof Player)) return;
         Player player = (Player) entity;
         Level world = player.getCommandSenderWorld();
         if (entity instanceof Player) {
